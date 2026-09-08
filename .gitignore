@@ -7,6 +7,11 @@
 
 # env
 .env
+*.pem
+*.key
+credentials
+secrets/
+node_modules/
 
 # testing
 /coverage
