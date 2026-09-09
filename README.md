@@ -15,7 +15,9 @@
 </div>
 
 # **Youtube Video for step by step Demonstration!**
-[![Video Tutorial]](https://youtu.be/g8X5AoqCJHc)
+[![Video Tutorial]] coming soon ..
+
+Note - this project is been demonstrated by  user  @claudchamp so big thanks and credit goes to him for this entire project .
 
 # Deploy Netflix Clone on Cloud using Jenkins - DevSecOps Project!
 
@@ -199,7 +201,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/N4si/DevSecOps-Project.git'
+                git branch: 'main', url: 'https://github.com/awash101/DevSecOps-Project.git'
             }
         }
         stage("Sonarqube Analysis") {
