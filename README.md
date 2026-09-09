@@ -17,7 +17,7 @@
 # **Youtube Video for step by step Demonstration!**
 [![Video Tutorial]] coming soon ..
 
-Note - this project is been demonstrated by  user  @claudchamp so big thanks and credit goes to him for this entire project .
+Note - this  entire project is been demonstrated by  user name  @claudchamp so big thanks and credit goes  direct to him for guiding it .
 
 # Deploy Netflix Clone on Cloud using Jenkins - DevSecOps Project!
 
