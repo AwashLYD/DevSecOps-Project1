@@ -1,4 +1,3 @@
-
 pipeline{
     agent any
     tools{
@@ -39,33 +38,33 @@ pipeline{
                 sh "npm install"
             }
         }
-
-stage('OWASP FS SCAN') {
-    steps {
-        dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', 
-                         odcInstallation: 'DP-Check',
-                         nvdCredentialsId: 'nvd-api-key'
-        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-    }
-}  
-      stage('TRIVY FS SCAN') {
+        stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', 
+                                 odcInstallation: 'DP-Check',
+                                 nvdCredentialsId: 'nvd-api-key'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage('TRIVY FS SCAN') {
             steps {
                 sh "trivy fs . > trivyfs.txt"
             }
         }
-stage("Docker Build & Push"){
-    steps{
-        script{
-           withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
-               withCredentials([string(credentialsId: 'tmdb-api-key', variable: 'TMDB_API_KEY')]) {
-                   sh "docker build --build-arg TMDB_V3_API_KEY=${TMDB_API_KEY} -t netflix ."
-               }
-               sh "docker tag netflix awash101/netflix:latest"
-               sh "docker push awash101/netflix:latest"
+        stage("Docker Build & Push"){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'docker'){       
+                        withCredentials([string(credentialsId: 'tmdb-api-key', variable: 'TMDB_API_KEY')]) {
+                            sh "docker build --build-arg TMDB_V3_API_KEY=${TMDB_API_KEY} -t netflix ."
+                        }
+                        sh "docker tag netflix awash101/netflix:latest"
+                        sh "docker push awash101/netflix:latest"
+                    }
+                }
             }
         }
-    }
-}        stage("TRIVY"){
+        stage("TRIVY"){
             steps{
                 sh "trivy image awash101/netflix:latest > trivyimage.txt"
             }
@@ -76,7 +75,17 @@ stage("Docker Build & Push"){
             }
         }
     }
+    post {
+        always {
+            emailext (
+                subject: "Pipeline ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """<p>Build Status: <b>${currentBuild.currentResult}</b></p>
+                         <p>Job: ${env.JOB_NAME}</p>
+                         <p>Build Number: ${env.BUILD_NUMBER}</p>
+                         <p>Check console output at <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
+                to: 'awashmaskeyash@gmail.com',
+                mimeType: 'text/html'
+            )
+        }
+    }
 }
-
-
-
